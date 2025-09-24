@@ -93,26 +93,6 @@
               marker-end="url(#arrowhead)"
               class="completed-line"
             />
-            <circle
-              :cx="(line.x1 + line.x2) / 2"
-              :cy="(line.y1 + line.y2) / 2"
-              r="8"
-              fill="#EF4444"
-              class="delete-btn"
-              @click="removeLine(index)"
-            >
-              <title>点击删除连线</title>
-            </circle>
-            <text
-              :x="(line.x1 + line.x2) / 2"
-              :y="(line.y1 + line.y2) / 2 + 1"
-              text-anchor="middle"
-              font-size="10"
-              fill="white"
-              class="delete-text"
-            >
-              ×
-            </text>
           </g>
           
           <!-- 当前拖拽的连线 -->
@@ -255,92 +235,86 @@ return {
 }
 }
 
-const handleMouseDown = (e, itemId) => {
-e.preventDefault()
-isDragging.value = true
-
-const element = e.currentTarget
-const center = getElementCenter(element)
-
-currentLine.value = {
-  startId: itemId,
-  x1: center.x,
-  y1: center.y,
-  x2: center.x,
-  y2: center.y
-}
-
-const handleMouseMove = (moveEvent) => {
-  if (!containerRef.value || !currentLine.value) return
-  
+const getElementEdge = (element, side = 'right') => {
+  if (!element || !containerRef.value) return { x: 0, y: 0 }
   const containerRect = containerRef.value.getBoundingClientRect()
-  const x = moveEvent.clientX - containerRect.left
-  const y = moveEvent.clientY - containerRect.top
-  
-  currentLine.value.x2 = x
-  currentLine.value.y2 = y
+  const elementRect = element.getBoundingClientRect()
+  const y = elementRect.top + elementRect.height / 2 - containerRect.top
+  let x
+  if (side === 'right') {
+    x = elementRect.right - containerRect.left
+  } else {
+    x = elementRect.left - containerRect.left
+  }
+  return { x, y }
 }
 
-const handleMouseUp = (upEvent) => {
-  isDragging.value = false
-  
-  // 检查是否释放在右侧选项上
-  const targetElement = document.elementFromPoint(upEvent.clientX, upEvent.clientY)
-  const rightItemElement = targetElement?.closest('[data-right-item]')
-  
-  if (rightItemElement) {
-    const targetId = rightItemElement.getAttribute('data-right-item')
-    const startCenter = getElementCenter(element)
-    const endCenter = getElementCenter(rightItemElement)
-    
-    // 检查是否已经存在连线
-    const existingLineIndex = lines.findIndex(line => 
-      line.startId === itemId || line.endId === targetId
-    )
-    
-    if (existingLineIndex !== -1) {
-      // 替换现有连线
-      lines[existingLineIndex] = {
-        startId: itemId,
-        endId: targetId,
-        x1: startCenter.x,
-        y1: startCenter.y,
-        x2: endCenter.x,
-        y2: endCenter.y
-      }
-    } else {
-      // 添加新连线
+const handleMouseDown = (e, itemId) => {
+  e.preventDefault()
+  isDragging.value = true
+
+  const element = e.currentTarget
+  const start = getElementEdge(element, 'right')
+
+  currentLine.value = {
+    startId: itemId,
+    x1: start.x,
+    y1: start.y,
+    x2: start.x,
+    y2: start.y
+  }
+
+  const handleMouseMove = (moveEvent) => {
+    if (!containerRef.value || !currentLine.value) return
+    const containerRect = containerRef.value.getBoundingClientRect()
+    const x = moveEvent.clientX - containerRect.left
+    const y = moveEvent.clientY - containerRect.top
+    currentLine.value.x2 = x
+    currentLine.value.y2 = y
+  }
+
+  const handleMouseUp = (upEvent) => {
+    isDragging.value = false
+    const targetElement = document.elementFromPoint(upEvent.clientX, upEvent.clientY)
+    const rightItemElement = targetElement?.closest('[data-right-item]')
+    if (rightItemElement) {
+      const targetId = rightItemElement.getAttribute('data-right-item')
+      const start = getElementEdge(element, 'right')
+      const end = getElementEdge(rightItemElement, 'left')
+      const existingLineIndex = lines.findIndex(line =>
+        line.startId === itemId || line.endId === targetId
+      )
       const newLine = {
         startId: itemId,
         endId: targetId,
-        x1: startCenter.x,
-        y1: startCenter.y,
-        x2: endCenter.x,
-        y2: endCenter.y
+        x1: start.x,
+        y1: start.y,
+        x2: end.x,
+        y2: end.y
       }
-      lines.push(newLine)
-      gameHistory.push({
-        action: 'add',
-        time: new Date(),
-        data: newLine
-      })
-      
-      // 检查是否完成所有连线
-      if (lines.length === leftItems.length) {
-        setTimeout(() => {
-          alert('🎉 恭喜！你已经完成所有连线！')
-        }, 100)
+      if (existingLineIndex !== -1) {
+        lines[existingLineIndex] = newLine
+      } else {
+        lines.push(newLine)
+        gameHistory.push({
+          action: 'add',
+          time: new Date(),
+          data: newLine
+        })
+        if (lines.length === leftItems.length) {
+          setTimeout(() => {
+            alert('🎉 恭喜！你已经完成所有连线！')
+          }, 100)
+        }
       }
     }
+    currentLine.value = null
+    document.removeEventListener('mousemove', handleMouseMove)
+    document.removeEventListener('mouseup', handleMouseUp)
   }
-  
-  currentLine.value = null
-  document.removeEventListener('mousemove', handleMouseMove)
-  document.removeEventListener('mouseup', handleMouseUp)
-}
 
-document.addEventListener('mousemove', handleMouseMove)
-document.addEventListener('mouseup', handleMouseUp)
+  document.addEventListener('mousemove', handleMouseMove)
+  document.addEventListener('mouseup', handleMouseUp)
 }
 
 const removeLine = (index) => {

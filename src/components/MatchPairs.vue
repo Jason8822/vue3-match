@@ -256,4 +256,25 @@ function resetDragState() {
   opacity: 0;
   transform: translateY(10px);
 }
+
+/* 暗主题适配：优先用 prefers-color-scheme 检测 */
+@media (prefers-color-scheme: dark) {
+  .candidate {
+    background-color: #222;
+    color: #fff;
+    border: 1px solid #444;
+  }
+  .placed-item {
+    background-color: #333;
+    color: #ffd700;
+    border: 1px solid #666;
+  }
+  .candidate-slot,
+  .target {
+    border-color: #555;
+  }
+  .placeholder {
+    color: #888;
+  }
+}
 </style>

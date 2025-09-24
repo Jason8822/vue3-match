@@ -40,4 +40,17 @@ import LineMatchComponent from './components/LineMatchComponent.vue';
 .logo.vue:hover {
   filter: drop-shadow(0 0 2em #42b883aa);
 }
+button {
+  background-color: #222;   /* 深色背景 */
+  color: #fff;              /* 白色文字 */
+  border: 1px solid #444;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+button:hover {
+  background-color: #444;
+  color: #ffd700;           /* 悬停时高亮文字 */
+}
 </style>
