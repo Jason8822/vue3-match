@@ -1,8 +1,12 @@
 <script setup>
 import HelloWorld from './components/HelloWorld.vue';
 import MatchPairs from './components/MatchPairs.vue';
-import LineMatch from './components/LineMatch.vue';
+// import LineMatch from './components/LineMatch.vue';
 import LineMatchComponent from './components/LineMatchComponent.vue';
+import DragSort from './components/DragSort.vue'; // 新增
+import DragSort1 from './components/DragSort1.vue'; // 新增
+import DragPairs from './components/DragPairs.vue'; 
+import OptionMatcher from './components/OptionMatcher.vue'; 
 </script>
 
 <template>
@@ -16,15 +20,19 @@ import LineMatchComponent from './components/LineMatchComponent.vue';
   </div>
   <!-- <HelloWorld msg="Vite + Vue" /> -->
   <MatchPairs />
-  <div style="width: 600px; height: 400px; border: 1px solid red">
+  
     <!-- <LineMatch /> -->
-    <LineMatchComponent 
-    ref="lineMatchRef"
-    @match-complete="handleMatchComplete"
-    @line-added="handleLineAdded"
-    @line-removed="handleLineRemoved"
-  />
-  </div>
+    <!-- <LineMatchComponent 
+      ref="lineMatchRef"
+      @match-complete="handleMatchComplete"
+      @line-added="handleLineAdded"
+      @line-removed="handleLineRemoved"
+    /> -->
+  
+  <DragSort /> <!-- 新增拖拽排序组件 -->
+  <DragPairs />
+  <DragSort1 /> <!-- 新增拖拽排序组件 -->
+   <OptionMatcher />
 </template>
 
 <style scoped>
