@@ -7,6 +7,7 @@ import DragSort from './components/DragSort.vue'; // 新增
 import DragSort1 from './components/DragSort1.vue'; // 新增
 import DragPairs from './components/DragPairs.vue'; 
 import NaiveuiRadio from './components/NaiveuiRadio.vue'; 
+import RadiosNoframe from './components/RadiosNoframe.vue'; 
 </script>
 
 <template>
@@ -34,6 +35,7 @@ import NaiveuiRadio from './components/NaiveuiRadio.vue';
   <DragSort1 /> <!-- 新增拖拽排序组件 -->
    <OptionMatcher />
   <NaiveuiRadio />
+  <RadiosNoframe />
 </template>
 
 <style scoped>
