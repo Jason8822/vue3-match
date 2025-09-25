@@ -6,7 +6,7 @@ import LineMatchComponent from './components/LineMatchComponent.vue';
 import DragSort from './components/DragSort.vue'; // 新增
 import DragSort1 from './components/DragSort1.vue'; // 新增
 import DragPairs from './components/DragPairs.vue'; 
-import OptionMatcher from './components/OptionMatcher.vue'; 
+import NaiveuiRadio from './components/NaiveuiRadio.vue'; 
 </script>
 
 <template>
@@ -33,6 +33,7 @@ import OptionMatcher from './components/OptionMatcher.vue';
   <DragPairs />
   <DragSort1 /> <!-- 新增拖拽排序组件 -->
    <OptionMatcher />
+  <NaiveuiRadio />
 </template>
 
 <style scoped>
